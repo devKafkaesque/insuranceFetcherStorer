@@ -1,0 +1,15 @@
+fetch_claims:
+  description: >
+    Use the fetch_api_data tool to retrieve insurance claim data from the API.
+    The endpoint is 'https://run.mocky.io/v3/38328b9a-aa57-4104-a80e-7c9d4267f47e'.
+    Ensure the data includes id, policy number, claim amount, status.
+  expected_output: >
+    A list of claim data objects, each containing id, policy number, claim amount, status.
+
+store_claims:
+  description: >
+    Use the store_in_mongodb tool to store the fetched claim data in the database.
+    The database URI is 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/?retryWrites=true&w=majority'.
+    Confirm that the data has been successfully stored.
+  expected_output: >
+    A confirmation message indicating that the claim data has been successfully stored in the database.
