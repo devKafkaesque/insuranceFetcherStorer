@@ -1,15 +1,30 @@
+adapt_schema:
+  description: >
+    Use the dynamic schema adaptation process to inspect incoming API payloads and map variant field names to the canonical schema using the provided list of expected column names.
+    The task should detect minor changes (e.g., "name" vs "full_name") and adapt accordingly, while rejecting payloads if the schema deviates too much.
+  expected_output: >
+    A standardized payload with canonical field names if the input schema is acceptable,
+    or an error message indicating that the schema deviation is too significant.
+
+forward_payload:
+  description: >
+    After adapting the API payload to the canonical schema, forward the standardized data to the static endpoint specified by next_agent_endpoint.
+    Ensure that the adapted payload is transmitted intact and reaches its destination.
+  expected_output: >
+    The adapted payload, forwarded to the static endpoint, to be passed to the next task.
+
 fetch_claims:
   description: >
     Use the fetch_api_data tool to retrieve insurance claim data from the API.
-    The endpoint is 'https://run.mocky.io/v3/38328b9a-aa57-4104-a80e-7c9d4267f47e'.
-    Ensure the data includes id, policy number, claim amount, status.
+    The endpoint is {api_endpoint}.
+    Ensure the data includes the expected fields (e.g., id, policy number, claim amount, status).
   expected_output: >
-    A list of claim data objects, each containing id, policy number, claim amount, status.
+    A list of claim data objects, each containing the expected fields.
 
 store_claims:
   description: >
     Use the store_in_mongodb tool to store the fetched claim data in the database.
-    The database URI is 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/?retryWrites=true&w=majority'.
+    The database URI is {database_uri}.
     Confirm that the data has been successfully stored.
   expected_output: >
     A confirmation message indicating that the claim data has been successfully stored in the database.

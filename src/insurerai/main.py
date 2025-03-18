@@ -6,24 +6,23 @@ from insurerai.crew import Insurerai
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-# Main control file for your insurance claims data crew.
-# This script provides inputs for fetching claims from your dummy insurance API 
-# and storing them in MongoDB.
-
 def run():
-    """
-    Run the crew to fetch and store insurance claims data.
-    """
     inputs = {
         'topic': 'Insurance Claims Data',
         'current_year': str(datetime.now().year),
-        'api_endpoint': 'https://run.mocky.io/v3/66b2b9b1-5e5c-4a73-aee4-4e5a7b8f0c3c',
-        'mongodb_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/?retryWrites=true&w=majority&appName=insuranceAIcluster',
-        'collection_name': 'claims'
+        'api_endpoint': 'https://run.mocky.io/v3/faf2b832-e8bd-43f5-b10c-1a529a82f289',
+        'database_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/insurance_db?retryWrites=true&w=majority&appName=insuranceAIcluster',
+        'collection_name': 'insurance_claims',
+        'similarity_cutoff': 0.6,
+        'missing_threshold': 0.5,
+        'next_agent_endpoint': 'http://localhost:8000/store_claims',
+        'column_names': ['id', 'policy_number', 'claim_amount', 'status']
     }
     
     try:
-        Insurerai().crew().kickoff(inputs=inputs)
+        insurerai = Insurerai()
+        insurerai.inputs = inputs  # Set inputs explicitly
+        insurerai.crew().kickoff(inputs=inputs)
     except Exception as e:
         raise Exception(f"An error occurred while running the crew: {e}")
 
@@ -33,9 +32,14 @@ def train():
     """
     inputs = {
         'topic': 'Insurance Claims Data',
-        'api_endpoint': 'https://run.mocky.io/v3/66b2b9b1-5e5c-4a73-aee4-4e5a7b8f0c3c',
-        'mongodb_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/?retryWrites=true&w=majority&appName=insuranceAIcluster',
-        'collection_name': 'claims'
+        'current_year': str(datetime.now().year),
+        'api_endpoint': 'https://run.mocky.io/v3/faf2b832-e8bd-43f5-b10c-1a529a82f289',
+        'database_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/insurance_db?retryWrites=true&w=majority&appName=insuranceAIcluster',
+        'collection_name': 'insurance_claims',
+        'similarity_cutoff': 0.6,
+        'missing_threshold': 0.5,
+        'next_agent_endpoint': 'http://localhost:8000/store_claims',  # Static endpoint
+        'column_names': ['id', 'policy_number', 'claim_amount', 'status']
     }
     try:
         Insurerai().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
@@ -58,9 +62,13 @@ def test():
     inputs = {
         'topic': 'Insurance Claims Data',
         'current_year': str(datetime.now().year),
-        'api_endpoint': 'https://run.mocky.io/v3/66b2b9b1-5e5c-4a73-aee4-4e5a7b8f0c3c',
-        'mongodb_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/?retryWrites=true&w=majority&appName=insuranceAIcluster',
-        'collection_name': 'claims'
+        'api_endpoint': 'https://run.mocky.io/v3/faf2b832-e8bd-43f5-b10c-1a529a82f289',
+        'database_uri': 'mongodb+srv://parasharvishist:yR7qtXETouPUcDpA@insuranceaicluster.k5phe.mongodb.net/insurance_db?retryWrites=true&w=majority&appName=insuranceAIcluster',
+        'collection_name': 'insurance_claims',
+        'similarity_cutoff': 0.6,
+        'missing_threshold': 0.5,
+        'next_agent_endpoint': 'http://localhost:8000/store_claims',  # Static endpoint
+        'column_names': ['id', 'policy_number', 'claim_amount', 'status']
     }
     try:
         Insurerai().crew().test(n_iterations=int(sys.argv[1]), openai_model_name=sys.argv[2], inputs=inputs)
@@ -68,5 +76,4 @@ def test():
         raise Exception(f"An error occurred while testing the crew: {e}")
 
 if __name__ == '__main__':
-    # Run the crew by default when executing this script.
     run()
